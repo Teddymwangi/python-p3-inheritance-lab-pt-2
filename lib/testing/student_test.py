@@ -1,49 +1,42 @@
-#!/usr/bin/env python3
-
+import unittest
 from student import Student, ChattyStudent
-
-import io
+from io import StringIO
 import sys
 
-class TestStudent:
-    '''Class Student in student.py'''
-    
-    def test_says_hello(self):
-        '''says a brief greeting.'''
-        captured_out = io.StringIO()
-        sys.stdout = captured_out
+class TestStudent(unittest.TestCase):
+    def test_student_hello(self):
         student = Student()
+        captured_output = StringIO()
+        sys.stdout = captured_output
         student.hello()
         sys.stdout = sys.__stdout__
-        assert(captured_out.getvalue() == "Hey there! I'm so excited to learn stuff.\n")
+        self.assertEqual(captured_output.getvalue().strip(), "Hey there! I'm so excited to learn stuff.")
 
-    def test_raises_hand(self):
-        '''respectfully tries to get the teacher's attention.'''
-        captured_out = io.StringIO()
-        sys.stdout = captured_out
+    def test_student_raise_hand(self):
         student = Student()
+        captured_output = StringIO()
+        sys.stdout = captured_output
         student.raise_hand()
         sys.stdout = sys.__stdout__
-        assert(captured_out.getvalue() == "Pick me!\n")
+        self.assertEqual(captured_output.getvalue().strip(), "Pick me!")
 
-class TestChattyStudent:
-    '''Class ChattyStudent in student.py'''
-    
-    def test_says_hello(self):
-        '''says a brief greeting, then tries to spoil a TV show.'''
-        captured_out = io.StringIO()
-        sys.stdout = captured_out
+    def test_chatty_student_hello(self):
         chatty_student = ChattyStudent()
+        captured_output = StringIO()
+        sys.stdout = captured_output
         chatty_student.hello()
         sys.stdout = sys.__stdout__
-        assert(captured_out.getvalue() == "Hey there! I'm so excited to learn stuff.\n" +
-            "How are you doing today? I'm okay, but I'm kind of tired. Did you watch The Walking Dead last night? You didn't?! Oh man, it was so crazy! What, you don't want any spoilers? Okay well let me just tell you who died...\n")
+        expected_output = "Hey there! I'm so excited to learn stuff.\nHow are you doing today? I'm okay, but I'm kind of tired. Did you watch The Walking Dead last night? You didn't?! Oh man, it was so crazy! What, you don't want any spoilers? Okay well let me just tell you who died..."
+        self.assertEqual(captured_output.getvalue().strip(), expected_output)
 
-    def test_raises_hand(self):
-        '''respectfully tries to get the teacher's attention ten times.'''
-        captured_out = io.StringIO()
-        sys.stdout = captured_out
+    def test_chatty_student_raise_hand(self):
         chatty_student = ChattyStudent()
+        captured_output = StringIO()
+        sys.stdout = captured_output
         chatty_student.raise_hand()
         sys.stdout = sys.__stdout__
-        assert(captured_out.getvalue() == "Pick me!\nPick me!\nPick me!\nPick me!\nPick me!\nPick me!\nPick me!\nPick me!\nPick me!\nPick me!\n")
+        expected_output = "\n".join(["Pick me!"] * 10)
+        self.assertEqual(captured_output.getvalue().strip(), expected_output)
+
+if __name__ == '__main__':
+    unittest.main()
